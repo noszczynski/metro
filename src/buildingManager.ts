@@ -7,13 +7,12 @@ export class BuildingManager {
 
     addBuilding(building: Building): boolean {
         // Check if building is within grid bounds
-        const blocks = building.getBlocks();
-        const isWithinBounds = blocks.every(block => 
-            block.row >= 0 &&
-            block.col >= 0 &&
-            block.row < this.gridRows - 1 &&
-            block.col < this.gridCols - 1
-        );
+        const position = building.getPosition();
+        const isWithinBounds = 
+            position.row >= 0 &&
+            position.col >= 0 &&
+            position.row < this.gridRows - 1 &&
+            position.col < this.gridCols - 1;
 
         if (!isWithinBounds) {
             return false;

@@ -30,7 +30,7 @@ const buildingManager = new BuildingManager(GRID_ROWS, GRID_COLS);
 const coordinates = Array.from({ length: GRID_ROWS }, (_, row) => Array.from({ length: GRID_COLS }, (_, col) => ({ row, col })));
 const buildings = coordinates.flatMap(row => {
   return row.map(coordinate => {
-    return new Building([coordinate]);
+    return new Building(coordinate);
   });
 });
 buildingManager.addBuildings(buildings);
@@ -87,19 +87,28 @@ function drawBoard() {
     });
 
     // Draw buildings
-    ctx.fillStyle = '#4444ff';  // Blue color for buildings
     buildingManager.getBuildings().forEach(building => {
-        building.getBlocks().forEach(block => {
-            const x = block.col * CELL_WIDTH + BUILDING_PADDING;
-            const y = block.row * CELL_HEIGHT + BUILDING_PADDING;
-            const width = CELL_WIDTH - (BUILDING_PADDING * 2);
-            const height = CELL_HEIGHT - (BUILDING_PADDING * 2);
-            
-            // Draw building block with rounded corners
-            ctx.beginPath();
-            ctx.roundRect(x, y, width, height, 4);  // 4px border radius
-            ctx.fill();
-        });
+        const position = building.getPosition();
+        const x = position.col * CELL_WIDTH + BUILDING_PADDING;
+        const y = position.row * CELL_HEIGHT + BUILDING_PADDING;
+        const width = CELL_WIDTH - (BUILDING_PADDING * 2);
+        const height = CELL_HEIGHT - (BUILDING_PADDING * 2);
+        
+        // Draw building block with rounded corners
+        ctx.beginPath();
+        ctx.roundRect(x, y, width, height, 4);  // 4px border radius
+        ctx.fill();
+        
+        // Add position text
+        ctx.fillStyle = '#ffffff';  // White text
+        ctx.font = '12px Arial';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        const text = `${position.row},${position.col}`;
+        ctx.fillText(text, x + width/2, y + height/2);
+        
+        // Reset fill style for next building
+        ctx.fillStyle = '#4444ff';
     });
     
     ctx.restore();
