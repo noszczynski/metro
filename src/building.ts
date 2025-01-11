@@ -1,21 +1,29 @@
-export type BlockPosition = {
-    row: number;
-    col: number;
-};
+import { Passenger } from './passenger';
 
 export class Building {
-    private position: BlockPosition;
+    private passengers: Passenger[] = [];
+    
+    constructor(private position: { row: number; col: number }) {}
 
-    constructor(position: BlockPosition) {
-        this.position = position;
+    startSpawnPassengers(minSpawnTime: number, maxSpawnTime: number) {
+        const spawnTime = Math.floor(Math.random() * (maxSpawnTime - minSpawnTime + 1)) + minSpawnTime;
+
+        setTimeout(() => {
+            const passenger = new Passenger(this.position);
+            this.addPassenger(passenger);
+            this.startSpawnPassengers(minSpawnTime, maxSpawnTime);
+        }, spawnTime);
     }
-
-    overlaps(other: Building): boolean {
-        return this.position.row === other.position.row && 
-               this.position.col === other.position.col;
+    
+    getPosition() {
+        return this.position;
     }
-
-    getPosition(): BlockPosition {
-        return { ...this.position };
+    
+    addPassenger(passenger: Passenger) {
+        this.passengers.push(passenger);
+    }
+    
+    getPassengers() {
+        return this.passengers;
     }
 } 

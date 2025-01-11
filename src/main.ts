@@ -26,14 +26,37 @@ import { Building } from './building';
 const pointsManager = new PointsManager(GRID_ROWS, GRID_COLS, CELL_WIDTH, CELL_HEIGHT);
 const buildingManager = new BuildingManager(GRID_ROWS, GRID_COLS);
 
+// Add timer constants
+const MIN_PASSENGER_SPAWN_TIME = 200 as const;
+const MAX_PASSENGER_SPAWN_TIME = 10000 as const;
+const MAX_BUILDINGS = 24 as const;
+
 // Add some initial buildings (you can modify these or add UI controls later)
-const coordinates = Array.from({ length: GRID_ROWS }, (_, row) => Array.from({ length: GRID_COLS }, (_, col) => ({ row, col })));
+const coordinates = Array.from(
+  { length: GRID_ROWS }, 
+  (_, row) => Array.from({ length: GRID_COLS }, (_, col) => ({ row, col }))
+);
+
 const buildings = coordinates.flatMap(row => {
   return row.map(coordinate => {
     return new Building(coordinate);
   });
-});
+})
+
+for (let i = 0; i < (GRID_ROWS * GRID_COLS) - MAX_BUILDINGS; i++) {
+  const randomIndex = Math.floor(Math.random() * buildings.length);
+  buildings.splice(randomIndex, 1);
+}
+
 buildingManager.addBuildings(buildings);
+
+function spawnPassengers() {
+    const buildings = buildingManager.getBuildings();
+
+    buildings.forEach(building => {
+        building.startSpawnPassengers(MIN_PASSENGER_SPAWN_TIME, MAX_PASSENGER_SPAWN_TIME);
+    });
+}
 
 function resizeCanvas() {
     canvas.width = window.innerWidth;
@@ -42,8 +65,6 @@ function resizeCanvas() {
     // Always center the board
     offsetX = (canvas.width - BOARD_WIDTH) / 2;
     offsetY = (canvas.height - BOARD_HEIGHT) / 2;
-    
-    drawBoard();
 }
 
 function drawBoard() {
@@ -96,19 +117,18 @@ function drawBoard() {
         
         // Draw building block with rounded corners
         ctx.beginPath();
-        ctx.roundRect(x, y, width, height, 4);  // 4px border radius
+        ctx.roundRect(x, y, width, height, 4);
+        ctx.fillStyle = '#4444ff';
         ctx.fill();
         
-        // Add position text
-        ctx.fillStyle = '#ffffff';  // White text
+        // Draw passenger count
+        ctx.fillStyle = '#ffffff';
         ctx.font = '12px Arial';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        const text = `${position.row},${position.col}`;
+        const passengerCount = building.getPassengers().length;
+        const text = `${passengerCount}`;
         ctx.fillText(text, x + width/2, y + height/2);
-        
-        // Reset fill style for next building
-        ctx.fillStyle = '#4444ff';
     });
     
     ctx.restore();
@@ -119,3 +139,13 @@ window.addEventListener('resize', resizeCanvas);
 
 // Initial setup
 resizeCanvas();
+
+// Start passenger generation
+spawnPassengers();
+
+function startGameLoop() {
+    drawBoard();
+    requestAnimationFrame(startGameLoop);
+}
+
+startGameLoop();

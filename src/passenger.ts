@@ -1,17 +1,18 @@
-import { Building } from "./building";
-
 export class Passenger {
-    private position: Building
-    private destination: Building
+    constructor(
+        private currentPosition: { row: number; col: number },
+        private targetPosition?: { row: number; col: number }
+    ) {}
 
-    constructor({
-        position,
-        destination
-    }: {
-        position: Building,
-        destination: Building
-    }) {
-        this.position = position;
-        this.destination = destination;
+    getCurrentPosition() {
+        return this.currentPosition;
+    }
+
+    getTargetPosition() {
+        return this.targetPosition;
+    }
+
+    setTargetPosition(position: { row: number; col: number }) {
+        this.targetPosition = position;
     }
 }

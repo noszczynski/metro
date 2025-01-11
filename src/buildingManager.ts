@@ -18,13 +18,6 @@ export class BuildingManager {
             return false;
         }
 
-        // Check for overlaps with existing buildings
-        for (const existingBuilding of this.buildings) {
-            if (building.overlaps(existingBuilding)) {
-                return false;
-            }
-        }
-
         this.buildings.push(building);
         return true;
     }
