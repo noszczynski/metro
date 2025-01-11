@@ -68,36 +68,6 @@ function resizeCanvas() {
     offsetY = (canvas.height - BOARD_HEIGHT) / 2;
 }
 
-// Add click handler after resizeCanvas function
-function handleCanvasClick(event: MouseEvent) {
-    const rect = canvas.getBoundingClientRect();
-    const clickX = event.clientX - rect.left - offsetX;
-    const clickY = event.clientY - rect.top - offsetY;
-
-    // Check if click is within any building
-    const buildings = buildingManager.getBuildings();
-
-    for (const building of buildings) {
-        const position = building.getPosition();
-        const x = position.col * CELL_WIDTH + BUILDING_PADDING;
-        const y = position.row * CELL_HEIGHT + BUILDING_PADDING;
-        const width = CELL_WIDTH - (BUILDING_PADDING * 2);
-        const height = CELL_HEIGHT - (BUILDING_PADDING * 2);
-
-        if (clickX >= x && clickX <= x + width &&
-            clickY >= y && clickY <= y + height) {
-
-            // Log building info and passengers
-            console.group(`Building at (${position.row}, ${position.col})`);
-            console.log('Total passengers:', building.getPassengers().length);
-            console.log('Passengers:', building.getPassengers());
-            console.groupEnd();
-
-            break;
-        }
-    }
-}
-
 function drawBoard() {
     // Clear the entire canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
