@@ -21,6 +21,7 @@ const CELL_HEIGHT = BOARD_HEIGHT / (GRID_ROWS - 1);
 import { PointsManager } from './points';
 import { BuildingManager } from './buildingManager';
 import { Building } from './building';
+import { Point } from './point';
 
 // Create points manager after the grid spacing calculations
 const pointsManager = new PointsManager(GRID_ROWS, GRID_COLS, CELL_WIDTH, CELL_HEIGHT);
@@ -39,7 +40,7 @@ const coordinates = Array.from(
 
 const buildings = coordinates.flatMap(row => {
   return row.map(coordinate => {
-    return new Building(coordinate);
+    return new Building(new Point(coordinate.col, coordinate.row));
   });
 })
 
@@ -93,16 +94,16 @@ function drawBoard() {
         if (col < GRID_COLS - 1) { // Connect right
             const rightPoint = points[(row * GRID_COLS) + col + 1];
             ctx.beginPath();
-            ctx.moveTo(point.x, point.y);
-            ctx.lineTo(rightPoint.x, rightPoint.y);
+            ctx.moveTo(point.col, point.row);
+            ctx.lineTo(rightPoint.col, rightPoint.row);
             ctx.stroke();
         }
         
         if (row < GRID_ROWS - 1) { // Connect down
             const downPoint = points[((row + 1) * GRID_COLS) + col];
             ctx.beginPath();
-            ctx.moveTo(point.x, point.y);
-            ctx.lineTo(downPoint.x, downPoint.y);
+            ctx.moveTo(point.col, point.row);
+            ctx.lineTo(downPoint.col, downPoint.row);
             ctx.stroke();
         }
     });
@@ -149,3 +150,41 @@ function startGameLoop() {
 }
 
 startGameLoop();
+
+function handleCanvasClick(event: MouseEvent) {
+    // Get click coordinates relative to canvas
+    const rect = canvas.getBoundingClientRect();
+    const clickX = event.clientX - rect.left - offsetX;
+    const clickY = event.clientY - rect.top - offsetY;
+
+    // Check each building to see if it was clicked
+    buildingManager.getBuildings().forEach(building => {
+        const position = building.getPosition();
+        const x = position.col * CELL_WIDTH + BUILDING_PADDING;
+        const y = position.row * CELL_HEIGHT + BUILDING_PADDING;
+        const width = CELL_WIDTH - (BUILDING_PADDING * 2);
+        const height = CELL_HEIGHT - (BUILDING_PADDING * 2);
+
+        // Check if click is within building bounds
+        if (
+            clickX >= x && 
+            clickX <= x + width && 
+            clickY >= y && 
+            clickY <= y + height
+        ) {
+            console.log('Building clicked:', {
+                position: building.getPosition(),
+                passengers: building.getPassengers(),
+                coordinates: {
+                    x,
+                    y,
+                    width,
+                    height
+                }
+            });
+        }
+    });
+}
+
+// Add this line after window.addEventListener('resize', resizeCanvas);
+canvas.addEventListener('click', handleCanvasClick);

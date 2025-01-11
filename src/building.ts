@@ -1,9 +1,10 @@
 import { Passenger } from './passenger';
+import { Point } from './point';
 
 export class Building {
     private passengers: Passenger[] = [];
     
-    constructor(private position: { row: number; col: number }) {}
+    constructor(private position: Point) {}
 
     startSpawnPassengers(minSpawnTime: number, maxSpawnTime: number) {
         const spawnTime = Math.floor(Math.random() * (maxSpawnTime - minSpawnTime + 1)) + minSpawnTime;
