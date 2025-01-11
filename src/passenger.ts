@@ -1,7 +1,9 @@
+import { Point } from "./point";
+
 export class Passenger {
     constructor(
-        private currentPosition: { row: number; col: number },
-        private targetPosition?: { row: number; col: number }
+        private currentPosition: Point,
+        private targetPosition?: Point
     ) {}
 
     getCurrentPosition() {
@@ -12,7 +14,7 @@ export class Passenger {
         return this.targetPosition;
     }
 
-    setTargetPosition(position: { row: number; col: number }) {
+    setTargetPosition(position: Point) {
         this.targetPosition = position;
     }
 }
