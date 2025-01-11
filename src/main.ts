@@ -1,33 +1,112 @@
-//TIP With Search Everywhere, you can find any action, file, or symbol in your project. Press <shortcut actionId="Shift"/> <shortcut actionId="Shift"/>, type in <b>terminal</b>, and press <shortcut actionId="EditorEnter"/>. Then run <shortcut raw="npm run dev"/> in the terminal and click the link in its output to open the app in the browser.
-export function setupCounter(element: HTMLElement) {
-  //TIP Try <shortcut actionId="GotoDeclaration"/> on <shortcut raw="counter"/> to see its usages. You can also use this shortcut to jump to a declaration – try it on <shortcut raw="counter"/> on line 13.
-  let counter = 0;
+const canvas = document.querySelector<HTMLCanvasElement>('#app')!;
+const ctx = canvas.getContext('2d')!;
 
-  const adjustCounterValue = (value: number)  => {
-    if (value >= 100) return value - 100;
-    if (value <= -100) return value + 100;
-    return value;
-  };
+// Board dimensions
+const BOARD_WIDTH = 800;  // Fixed board width
+const BOARD_HEIGHT = 600; // Fixed board height
 
-  const setCounter = (value: number) => {
-    counter = adjustCounterValue(value);
-    //TIP WebStorm has lots of inspections to help you catch issues in your project. It also has quick fixes to help you resolve them. Press <shortcut actionId="ShowIntentionActions"/> on <shortcut raw="text"/> and choose <b>Inline variable</b> to clean up the redundant code.
-    const text = `${counter}`;
-    element.innerHTML = text;
-  };
+// Simplify the offset variables to just center the board
+let offsetX = 0;
+let offsetY = 0;
 
-  document.getElementById('increaseByOne')?.addEventListener('click', () => setCounter(counter + 1));
-  document.getElementById('decreaseByOne')?.addEventListener('click', () => setCounter(counter - 1));
-  document.getElementById('increaseByTwo')?.addEventListener('click', () => setCounter(counter + 2));
+// Add these constants after the board dimensions
+const GRID_ROWS = 12;     // Number of rows in the grid
+const GRID_COLS = 16;     // Number of columns in the grid
+const BUILDING_PADDING = 4;  // Pixels of padding around each building block
 
-  //TIP In the app running in the browser, you’ll find that clicking <b>-2</b> doesn't work. To fix that, rewrite it using the code from lines 19 - 21 as examples of the logic.
-  document.getElementById('decreaseByTwo')
+// Calculate grid spacing
+const CELL_WIDTH = BOARD_WIDTH / (GRID_COLS - 1);
+const CELL_HEIGHT = BOARD_HEIGHT / (GRID_ROWS - 1);
 
-  //TIP Let’s see how to review and commit your changes. Press <shortcut actionId="GotoAction"/> and look for <b>commit</b>. Try checking the diff for a file – double-click main.ts to do that.
-  setCounter(0);
+import { PointsManager } from './points';
+import { BuildingManager } from './buildingManager';
+import { Building } from './building';
+
+// Create points manager after the grid spacing calculations
+const pointsManager = new PointsManager(GRID_ROWS, GRID_COLS, CELL_WIDTH, CELL_HEIGHT);
+const buildingManager = new BuildingManager(GRID_ROWS, GRID_COLS);
+
+// Add some initial buildings (you can modify these or add UI controls later)
+const coordinates = Array.from({ length: GRID_ROWS }, (_, row) => Array.from({ length: GRID_COLS }, (_, col) => ({ row, col })));
+const buildings = coordinates.flatMap(row => {
+  return row.map(coordinate => {
+    return new Building([coordinate]);
+  });
+});
+buildingManager.addBuildings(buildings);
+
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    
+    // Always center the board
+    offsetX = (canvas.width - BOARD_WIDTH) / 2;
+    offsetY = (canvas.height - BOARD_HEIGHT) / 2;
+    
+    drawBoard();
 }
 
-//TIP To find text strings in your project, you can use the <shortcut actionId="FindInPath"/> shortcut. Press it and type in <b>counter</b> – you’ll get all matches in one place.
-setupCounter(document.getElementById('counter-value') as HTMLElement);
+function drawBoard() {
+    // Clear the entire canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    // Draw the game board
+    ctx.fillStyle = '#424242'; // Dark gray
+    ctx.fillRect(offsetX, offsetY, BOARD_WIDTH, BOARD_HEIGHT);
+    
+    ctx.save();
+    ctx.translate(offsetX, offsetY);
+    
+    // Update to use pointsManager
+    const points = pointsManager.getPoints();
+    
+    // Draw grid lines (streets)
+    ctx.strokeStyle = '#666666';
+    ctx.lineWidth = 1;
+    
+    points.forEach((point) => {
+        // Use Point class's getGridPosition method
+        const { row, col } = point.getGridPosition(CELL_WIDTH, CELL_HEIGHT);
+        
+        // Connect to adjacent points (if they exist)
+        if (col < GRID_COLS - 1) { // Connect right
+            const rightPoint = points[(row * GRID_COLS) + col + 1];
+            ctx.beginPath();
+            ctx.moveTo(point.x, point.y);
+            ctx.lineTo(rightPoint.x, rightPoint.y);
+            ctx.stroke();
+        }
+        
+        if (row < GRID_ROWS - 1) { // Connect down
+            const downPoint = points[((row + 1) * GRID_COLS) + col];
+            ctx.beginPath();
+            ctx.moveTo(point.x, point.y);
+            ctx.lineTo(downPoint.x, downPoint.y);
+            ctx.stroke();
+        }
+    });
 
-//TIP There's much more in WebStorm to help you be more productive. Press <shortcut actionId="Shift"/> <shortcut actionId="Shift"/> and search for <b>Learn WebStorm</b> to open our learning hub with more things for you to try.
+    // Draw buildings
+    ctx.fillStyle = '#4444ff';  // Blue color for buildings
+    buildingManager.getBuildings().forEach(building => {
+        building.getBlocks().forEach(block => {
+            const x = block.col * CELL_WIDTH + BUILDING_PADDING;
+            const y = block.row * CELL_HEIGHT + BUILDING_PADDING;
+            const width = CELL_WIDTH - (BUILDING_PADDING * 2);
+            const height = CELL_HEIGHT - (BUILDING_PADDING * 2);
+            
+            // Draw building block with rounded corners
+            ctx.beginPath();
+            ctx.roundRect(x, y, width, height, 4);  // 4px border radius
+            ctx.fill();
+        });
+    });
+    
+    ctx.restore();
+}
+
+// Initialize
+window.addEventListener('resize', resizeCanvas);
+
+// Initial setup
+resizeCanvas();
