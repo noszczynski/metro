@@ -7,8 +7,8 @@ import { Shape } from "./types";
 
 const COLLISION_MAX_ATTEMPTS = 100;
 const GAME_SPEED = 1;
-const BASE_PASSENGER_SPAWN_RATE = 100;
-const BASE_STATION_SPAWN_RATE = 450;
+const BASE_PASSENGER_SPAWN_RATE = 20;
+const BASE_STATION_SPAWN_RATE = 200;
 const PASSENGER_SPAWN_RATE = Math.floor(BASE_PASSENGER_SPAWN_RATE / GAME_SPEED);
 const STATION_SPAWN_RATE = Math.floor(BASE_STATION_SPAWN_RATE / GAME_SPEED);
 
@@ -18,6 +18,11 @@ export class Game {
 
     private passengers: Passenger[];
     private stations: Station[];
+
+    private stationConnections: {
+        fromStationId: string;
+        toStationId: string;
+    }[];
 
     constructor({
         board,
@@ -31,11 +36,14 @@ export class Game {
         // Game objects
         this.passengers = [];
         this.stations = [];
+        this.stationConnections = [];
     }
 
     draw() {
         console.log('Drawing game...');
         this.board.draw();
+
+        this.drawStationConnections();
 
         this.passengers.forEach((passenger) => {
             passenger.draw(this.board.getCtx());
@@ -43,6 +51,31 @@ export class Game {
 
         this.stations.forEach((station) => {
             station.draw(this.board.getCtx());
+        });
+    }
+
+    drawStationConnections() {
+        const ctx = this.board.getCtx();
+        ctx.strokeStyle = '#FFFFFF'; // White lines
+        ctx.lineWidth = 2;
+
+        this.stationConnections.forEach(connection => {
+            const fromStation = this.stations.find(s => s.getId() === connection.fromStationId);
+            const toStation = this.stations.find(s => s.getId() === connection.toStationId);
+
+            if (!fromStation || !toStation) return;
+
+            // Get center points of stations
+            const x1 = fromStation.getX() + Station.size / 2;
+            const y1 = fromStation.getY() + Station.size / 2;
+            const x2 = toStation.getX() + Station.size / 2;
+            const y2 = toStation.getY() + Station.size / 2;
+
+            // Draw line
+            ctx.beginPath();
+            ctx.moveTo(x1, y1);
+            ctx.lineTo(x2, y2);
+            ctx.stroke();
         });
     }
 
@@ -109,6 +142,13 @@ export class Game {
 
         if (this.canSpawnPassenger()) this.spawnPassenger();
         if (this.canSpawnStation()) this.spawnStation();
+
+        if (this.stations.length === 2) {
+            this.stationConnections.push({
+                fromStationId: this.stations[0].getId(),
+                toStationId: this.stations[1].getId(),
+            });
+        }
     }
 
     start() {

@@ -11,6 +11,8 @@ window.addEventListener('load', () => {
     const BOARD_HEIGHT = 800; // Fixed board height
     const SCALE = 1;
 
+    ctx.translate(0.5, 0.5);
+
     // Set canvas dimensions and style
     canvas.width = BOARD_WIDTH * SCALE;
     canvas.height = BOARD_HEIGHT * SCALE;

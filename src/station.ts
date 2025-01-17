@@ -1,12 +1,15 @@
 import { Object2D } from "./object-2d";
 import { Point } from "./point";
 import { Shape } from "./types";
+import { v4 as uuidv4 } from 'uuid';
 
-const STATION_SIZE = 35;
+const STATION_SIZE = 18;
 const STATION_COLOR = '#007A33'; // bottle green
 const STATION_SHAPE = Shape.RECT;
 
 export class Station extends Object2D {
+    private id: string;
+
     static size = STATION_SIZE;
     static color = STATION_COLOR;
     static shape = STATION_SHAPE;
@@ -15,7 +18,13 @@ export class Station extends Object2D {
 
     constructor(position: Point) {
         super(position.getX(), position.getY(), STATION_SIZE, STATION_SIZE, STATION_COLOR, STATION_SHAPE);
+        
+        this.id = uuidv4();
         this.position = position;
+    }
+
+    getId() {
+        return this.id;
     }
 
     getPosition() {
