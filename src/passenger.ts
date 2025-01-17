@@ -1,5 +1,6 @@
 import { Object2D } from "./object-2d";
 import { Point } from "./point";
+import { Shape } from "./types";
 
 const PASSENGER_SIZE = 10;
 const PASSENGER_COLOR = '#f56abc';
@@ -12,7 +13,7 @@ export class Passenger extends Object2D {
         private currentPosition: Point,
         private targetPosition?: Point
     ) {
-        super(currentPosition.getX(), currentPosition.getY(), Passenger.size, Passenger.size, Passenger.color);
+        super(currentPosition.getX(), currentPosition.getY(), Passenger.size, Passenger.size, Passenger.color, Shape.CIRCLE);
     }
 
     getCurrentPosition() {
