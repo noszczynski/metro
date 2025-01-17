@@ -3,6 +3,7 @@ import { Object2D } from "./object-2d";
 import { Passenger } from "./passenger";
 import { Point } from "./point";
 import { Station } from "./station";
+import { Train } from "./train";
 import { Shape } from "./types";
 
 const COLLISION_MAX_ATTEMPTS = 100;
@@ -21,6 +22,7 @@ export class Game {
     // Game objects
     private passengers: Passenger[];
     private stations: Station[];
+    private trains: Train[];
 
     private stationConnections: {
         fromStationId: string;
@@ -42,7 +44,8 @@ export class Game {
         this.passengers = [];
         this.stations = [];
         this.stationConnections = [];
-
+        this.trains = [];
+        
         this.board.onCanvasClick((x, y) => {
             console.log('Game received canvas click at:', { x, y });
             const point = new Point(x, y);
@@ -65,6 +68,10 @@ export class Game {
 
         this.stations.forEach((station) => {
             station.draw(this.board.getCtx());
+        });
+
+        this.trains.forEach((train) => {
+            train.draw(this.board.getCtx());
         });
     }
 
