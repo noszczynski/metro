@@ -7,8 +7,15 @@ export class Object2D {
         public color: string,
     ) {}
 
-    draw(ctx: CanvasRenderingContext2D) {
+    draw(ctx: CanvasRenderingContext2D, type: 'circle' | 'rect' = 'circle') {
         ctx.fillStyle = this.color;
-        ctx.fillRect(this.x, this.y, this.width, this.height);
+
+        if (type === 'circle') {
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.width, 0, 2 * Math.PI);
+            ctx.fill();
+        } else {
+            ctx.fillRect(this.x, this.y, this.width, this.height);
+        }
     }
 }
