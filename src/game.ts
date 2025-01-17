@@ -13,9 +13,14 @@ const PASSENGER_SPAWN_RATE = Math.floor(BASE_PASSENGER_SPAWN_RATE / GAME_SPEED);
 const STATION_SPAWN_RATE = Math.floor(BASE_STATION_SPAWN_RATE / GAME_SPEED);
 
 export class Game {
+    // Game properties
     private board: Board;
     private tick: number;
 
+    // Game variables
+    private availableStationsToPlace: number;
+
+    // Game objects
     private passengers: Passenger[];
     private stations: Station[];
 
@@ -32,6 +37,8 @@ export class Game {
         // Game properties
         this.board = board;
         this.tick = 0;
+
+        this.availableStationsToPlace = 4;
 
         // Game objects
         this.passengers = [];
@@ -129,12 +136,63 @@ export class Game {
     }
 
     canSpawnStation() {
-        return this.tick % STATION_SPAWN_RATE === 0;
+        return this.tick % STATION_SPAWN_RATE === 0 && this.availableStationsToPlace > 0;
     }
+    
 
     spawnStation() {
         const point = this.getNoCollisionPoint(Station.size);
         this.stations.push(new Station(point));
+        this.availableStationsToPlace--;
+    }
+
+    status() {
+        console.log({
+            stations: this.stations,
+            passengers: this.passengers,
+        })
+    }
+
+    findClosestStation(passenger: Passenger): Station | null {
+        if (this.stations.length === 0) return null;
+
+        return this.stations.reduce((closest, station) => {
+            if (!closest) return station;
+
+            const currentDistance = Math.sqrt(
+                Math.pow(passenger.getX() - station.getX(), 2) + 
+                Math.pow(passenger.getY() - station.getY(), 2)
+            );
+
+            const closestDistance = Math.sqrt(
+                Math.pow(passenger.getX() - closest.getX(), 2) + 
+                Math.pow(passenger.getY() - closest.getY(), 2)
+            );
+
+            return currentDistance < closestDistance ? station : closest;
+        }, null as Station | null);
+    }
+
+    removePassenger(passengerId: string) {
+        this.passengers = this.passengers.filter(p => p.getId() !== passengerId);
+    }
+
+    updatePassengers() {
+        this.passengers.forEach(passenger => {
+            if (!passenger.getStartingStationPoint()) {
+                const closestStation = this.findClosestStation(passenger);
+
+                if (closestStation) {
+                    passenger.setStartingStationPoint(closestStation.getPosition());
+                }
+            }
+
+            const point = passenger.getStartingStationPoint();
+
+            if (point) {
+                passenger.moveTowardsTarget(this.tick, point);
+            }
+        });
     }
 
     update() {
@@ -142,6 +200,8 @@ export class Game {
 
         if (this.canSpawnPassenger()) this.spawnPassenger();
         if (this.canSpawnStation()) this.spawnStation();
+
+        this.updatePassengers();
 
         if (this.stations.length === 2) {
             this.stationConnections.push({
@@ -154,6 +214,9 @@ export class Game {
     start() {
         this.update();
         this.draw();
+
+        if (this.tick % 1000 === 0) this.status();
+
         requestAnimationFrame(() => this.start());
     }
 }
