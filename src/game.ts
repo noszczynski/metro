@@ -5,6 +5,13 @@ import { Point } from "./point";
 import { Station } from "./station";
 import { Shape } from "./types";
 
+const COLLISION_MAX_ATTEMPTS = 100;
+const GAME_SPEED = 1;
+const BASE_PASSENGER_SPAWN_RATE = 100;
+const BASE_STATION_SPAWN_RATE = 450;
+const PASSENGER_SPAWN_RATE = Math.floor(BASE_PASSENGER_SPAWN_RATE / GAME_SPEED);
+const STATION_SPAWN_RATE = Math.floor(BASE_STATION_SPAWN_RATE / GAME_SPEED);
+
 export class Game {
     private board: Board;
     private tick: number;
@@ -44,12 +51,10 @@ export class Game {
 
         let attempts = 0;
         
-        while (attempts < 2) {
+        while (attempts < COLLISION_MAX_ATTEMPTS) {
             // Generate random x,y coordinates within board boundaries
             const x = Math.floor(Math.random() * (this.board.getWidth() - size));
             const y = Math.floor(Math.random() * (this.board.getHeight() - size));
-
-            console.log(x, y, size, this.board.getWidth(), this.board.getHeight());
             
             // Create temporary object to check collisions
             const tempObject = new Object2D(x, y, size, size, '', Shape.RECT);
@@ -82,7 +87,7 @@ export class Game {
     }
 
     canSpawnPassenger() {
-        return this.tick % 10 === 0;
+        return this.tick % PASSENGER_SPAWN_RATE === 0;
     }
 
     spawnPassenger() {
@@ -91,7 +96,7 @@ export class Game {
     }
 
     canSpawnStation() {
-        return this.tick % 35 === 0;
+        return this.tick % STATION_SPAWN_RATE === 0;
     }
 
     spawnStation() {
