@@ -78,10 +78,30 @@ export class Game {
             const x2 = toStation.getX() + Station.size / 2;
             const y2 = toStation.getY() + Station.size / 2;
 
-            // Draw line
+            // Draw the path
             ctx.beginPath();
             ctx.moveTo(x1, y1);
-            ctx.lineTo(x2, y2);
+
+            // Calculate horizontal and vertical distances
+            const dx = x2 - x1;
+            const dy = y2 - y1;
+
+            if (Math.abs(dx) < 50 || Math.abs(dy) < 50) {
+                // Draw direct line if stations are close
+                ctx.lineTo(x2, y2);
+            } else if (Math.abs(dx) > Math.abs(dy)) {
+                // Draw two lines if horizontal distance is greater
+                const midX = x1 + dx / 2;
+                ctx.lineTo(midX, y1);
+                ctx.lineTo(x2, y2);
+            } else {
+                // Draw three lines for more complex paths
+                const midY = y1 + dy / 2;
+                ctx.lineTo(x1, midY);
+                ctx.lineTo(x2, midY);
+                ctx.lineTo(x2, y2);
+            }
+            
             ctx.stroke();
         });
     }
@@ -138,11 +158,21 @@ export class Game {
     canSpawnStation() {
         return this.tick % STATION_SPAWN_RATE === 0 && this.availableStationsToPlace > 0;
     }
-    
 
     spawnStation() {
         const point = this.getNoCollisionPoint(Station.size);
-        this.stations.push(new Station(point));
+        const newStation = new Station(point);
+        
+        // If there are existing stations, connect the last one to this new one
+        if (this.stations.length > 0) {
+            const lastStation = this.stations[this.stations.length - 1];
+            this.stationConnections.push({
+                fromStationId: lastStation.getId(),
+                toStationId: newStation.getId(),
+            });
+        }
+        
+        this.stations.push(newStation);
         this.availableStationsToPlace--;
     }
 
@@ -202,13 +232,6 @@ export class Game {
         if (this.canSpawnStation()) this.spawnStation();
 
         this.updatePassengers();
-
-        if (this.stations.length === 2) {
-            this.stationConnections.push({
-                fromStationId: this.stations[0].getId(),
-                toStationId: this.stations[1].getId(),
-            });
-        }
     }
 
     start() {
