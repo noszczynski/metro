@@ -1,7 +1,9 @@
 import { Board } from "./board";
+import { Object2D } from "./object-2d";
 import { Passenger } from "./passenger";
 import { Point } from "./point";
 import { Station } from "./station";
+import { Shape } from "./types";
 
 export class Game {
     private board: Board;
@@ -37,33 +39,63 @@ export class Game {
         });
     }
 
+    getNoCollisionPoint(size: number) {
+        const objects: Object2D[] = [...this.passengers, ...this.stations];
+
+        let attempts = 0;
+        
+        while (attempts < 2) {
+            // Generate random x,y coordinates within board boundaries
+            const x = Math.floor(Math.random() * (this.board.getWidth() - size));
+            const y = Math.floor(Math.random() * (this.board.getHeight() - size));
+
+            console.log(x, y, size, this.board.getWidth(), this.board.getHeight());
+            
+            // Create temporary object to check collisions
+            const tempObject = new Object2D(x, y, size, size, '', Shape.RECT);
+
+            // Check boundary collisions with board
+            const hasBoundaryCollision = 
+                x < 0 ||
+                x + size >= this.board.getWidth() ||
+                y + size >= this.board.getHeight();
+
+            if (hasBoundaryCollision) {
+                attempts++;
+                continue;
+            }
+
+            // Check collisions with other objects
+            const hasObjectCollision = objects.some(obj => 
+                tempObject.isCollidingWith(obj)
+            );
+
+            if (hasObjectCollision) {
+                attempts++;
+                continue;
+            }
+
+            return new Point(x, y);
+        }
+
+        throw new Error('No non-colliding point found after 100 attempts');
+    }
+
     canSpawnPassenger() {
-        return this.tick % 100 === 0;
+        return this.tick % 10 === 0;
     }
 
     spawnPassenger() {
-        const padding = Passenger.size;
-
-        const point = new Point(
-            padding + Math.floor(Math.random() * (this.board.getWidth() - padding * 2)),
-            padding + Math.floor(Math.random() * (this.board.getHeight() - padding * 2))
-        );
-
+        const point = this.getNoCollisionPoint(Passenger.size);
         this.passengers.push(new Passenger(point));
     }
 
     canSpawnStation() {
-        return this.tick % 450 === 0;
+        return this.tick % 35 === 0;
     }
 
     spawnStation() {
-        const padding = Station.size;
-
-        const point = new Point(
-            padding + Math.floor(Math.random() * (this.board.getWidth() - padding * 2)),
-            padding + Math.floor(Math.random() * (this.board.getHeight() - padding * 2))
-        );
-
+        const point = this.getNoCollisionPoint(Station.size);
         this.stations.push(new Station(point));
     }
 

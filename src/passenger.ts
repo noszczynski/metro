@@ -11,24 +11,21 @@ export class Passenger extends Object2D {
 
     constructor(
         private currentPosition: Point,
-        private targetPosition?: Point
     ) {
         super(currentPosition.getX(), currentPosition.getY(), Passenger.size, Passenger.size, Passenger.color, Shape.CIRCLE);
     }
 
-    getCurrentPosition() {
+    getPosition() {
         return this.currentPosition;
     }
 
-    getTargetPosition() {
-        return this.targetPosition;
-    }
-
-    setTargetPosition(position: Point) {
-        this.targetPosition = position;
+    drawHitbox(ctx: CanvasRenderingContext2D) {
+        ctx.strokeStyle = 'red';
+        ctx.strokeRect(this.getX(), this.getY(), this.getWidth(), this.getHeight());
     }
 
     draw(ctx: CanvasRenderingContext2D) {
         super.draw(ctx);
+        // this.drawHitbox(ctx);
     }
 }
