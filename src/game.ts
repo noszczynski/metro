@@ -8,9 +8,7 @@ import { Shape } from "./types";
 const COLLISION_MAX_ATTEMPTS = 100;
 const GAME_SPEED = 1;
 const BASE_PASSENGER_SPAWN_RATE = 20;
-const BASE_STATION_SPAWN_RATE = 200;
 const PASSENGER_SPAWN_RATE = Math.floor(BASE_PASSENGER_SPAWN_RATE / GAME_SPEED);
-const STATION_SPAWN_RATE = Math.floor(BASE_STATION_SPAWN_RATE / GAME_SPEED);
 
 export class Game {
     // Game properties
@@ -44,6 +42,15 @@ export class Game {
         this.passengers = [];
         this.stations = [];
         this.stationConnections = [];
+
+        this.board.onCanvasClick((x, y) => {
+            console.log('Game received canvas click at:', { x, y });
+            const point = new Point(x, y);
+            
+            if (this.canSpawnStation() && this.checkCollision(this.stations, point, Station.size)) {
+                this.spawnStation(point);
+            }
+        });
     }
 
     draw() {
@@ -106,6 +113,28 @@ export class Game {
         });
     }
 
+    checkCollision(objects: Object2D[], point: Point, size: number) {
+        // Create temporary object to check collisions
+        const tempObject = new Object2D(point.getX(), point.getY(), size, size, '', Shape.RECT);
+
+        // Check boundary collisions with board
+        const hasBoundaryCollision = 
+            point.getX() < 0 ||
+            point.getX() + size >= this.board.getWidth() ||
+            point.getY() + size >= this.board.getHeight();
+
+        if (hasBoundaryCollision) return false;
+
+        // Check collisions with other objects
+        const hasObjectCollision = objects.some(obj => 
+            tempObject.isCollidingWith(obj)
+        );
+
+        if (hasObjectCollision) return false;
+
+        return true;
+    }
+
     getNoCollisionPoint(size: number) {
         const objects: Object2D[] = [...this.passengers, ...this.stations];
 
@@ -115,32 +144,12 @@ export class Game {
             // Generate random x,y coordinates within board boundaries
             const x = Math.floor(Math.random() * (this.board.getWidth() - size));
             const y = Math.floor(Math.random() * (this.board.getHeight() - size));
-            
-            // Create temporary object to check collisions
-            const tempObject = new Object2D(x, y, size, size, '', Shape.RECT);
 
-            // Check boundary collisions with board
-            const hasBoundaryCollision = 
-                x < 0 ||
-                x + size >= this.board.getWidth() ||
-                y + size >= this.board.getHeight();
-
-            if (hasBoundaryCollision) {
-                attempts++;
-                continue;
+            if (this.checkCollision(objects, new Point(x, y), size)) {
+                return new Point(x, y);
             }
 
-            // Check collisions with other objects
-            const hasObjectCollision = objects.some(obj => 
-                tempObject.isCollidingWith(obj)
-            );
-
-            if (hasObjectCollision) {
-                attempts++;
-                continue;
-            }
-
-            return new Point(x, y);
+            attempts++;
         }
 
         throw new Error('No non-colliding point found after 100 attempts');
@@ -156,11 +165,10 @@ export class Game {
     }
 
     canSpawnStation() {
-        return this.tick % STATION_SPAWN_RATE === 0 && this.availableStationsToPlace > 0;
+        return this.availableStationsToPlace > 0;
     }
 
-    spawnStation() {
-        const point = this.getNoCollisionPoint(Station.size);
+    spawnStation(point: Point) {
         const newStation = new Station(point);
         
         // If there are existing stations, connect the last one to this new one
@@ -209,18 +217,24 @@ export class Game {
 
     updatePassengers() {
         this.passengers.forEach(passenger => {
-            if (!passenger.getStartingStationPoint()) {
+            const startingStation = passenger.getStartingStationPoint();
+
+            if (!startingStation) {
                 const closestStation = this.findClosestStation(passenger);
 
                 if (closestStation) {
-                    passenger.setStartingStationPoint(closestStation.getPosition());
+                    passenger.setStartingStationPoint(closestStation.getId(), closestStation.getPosition());
                 }
-            }
+            } else {
+                passenger.moveTowardsTarget(this.tick, startingStation.point);
 
-            const point = passenger.getStartingStationPoint();
+                if (passenger.hasArrivedAtStation(startingStation.point)) {
+                    const destinationStation = this.stations.find(station => station.getId() === startingStation.stationId);
 
-            if (point) {
-                passenger.moveTowardsTarget(this.tick, point);
+                    destinationStation?.addPassenger(passenger);
+
+                    this.removePassenger(passenger.getId());
+                }
             }
         });
     }
@@ -229,7 +243,6 @@ export class Game {
         this.tick++;
 
         if (this.canSpawnPassenger()) this.spawnPassenger();
-        if (this.canSpawnStation()) this.spawnStation();
 
         this.updatePassengers();
     }

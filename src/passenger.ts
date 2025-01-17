@@ -2,7 +2,6 @@ import { Object2D } from "./object-2d";
 import { Point } from "./point";
 import { Shape } from "./types";
 import { v4 as uuidv4 } from 'uuid';
-import { Station } from "./station";
 
 const PASSENGER_SIZE = 10;
 const PASSENGER_COLOR = '#f56abc';
@@ -10,7 +9,10 @@ const ARRIVAL_THRESHOLD = 2;
 
 export class Passenger extends Object2D {
     private id: string;
-    private stationPoint: Point | null = null;
+    private stationPoint: {
+        point: Point;
+        stationId: string;
+    } | null = null;
     private destinationPoint: Point;
     private speed: number;
 
@@ -53,8 +55,11 @@ export class Passenger extends Object2D {
         // this.drawHitbox(ctx);
     }
 
-    setStartingStationPoint(point: Point) {
-        this.stationPoint = point;
+    setStartingStationPoint(stationId: string, point: Point) {
+        this.stationPoint = {
+            point,
+            stationId,
+        };
     }
 
     getStartingStationPoint() {
@@ -81,12 +86,12 @@ export class Passenger extends Object2D {
         this.currentPosition = new Point(this.x, this.y);
     }
 
-    hasArrivedAtStation(station: Station): boolean {
+    hasArrivedAtStation(stationPoint: Point): boolean {
         if (!this.stationPoint) return false;
         
         const distance = Math.sqrt(
-            Math.pow(this.x - station.getX(), 2) + 
-            Math.pow(this.y - station.getY(), 2)
+            Math.pow(this.x - stationPoint.getX(), 2) + 
+            Math.pow(this.y - stationPoint.getY(), 2)
         );
 
         return distance <= ARRIVAL_THRESHOLD;

@@ -10,6 +10,16 @@ export class Board {
         this.height = canvas.height;
     }
 
+    onCanvasClick(callback: (x: number, y: number) => void) {
+        this.canvas.addEventListener('click', (event) => {
+            const rect = this.canvas.getBoundingClientRect();
+            const x = Math.round(event.clientX - rect.left);
+            const y = Math.round(event.clientY - rect.top);
+            
+            callback(x, y);
+        });
+    }
+
     getCtx() {
         return this.ctx;
     }

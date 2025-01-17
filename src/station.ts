@@ -39,7 +39,21 @@ export class Station extends Object2D {
 
     draw(ctx: CanvasRenderingContext2D) {
         super.draw(ctx);
-        // this.drawHitbox(ctx);
+        this.drawHitbox(ctx);
+        
+        // Draw passenger count
+        const passengerCount = this.passengers.length;
+        if (passengerCount > 0) {
+            ctx.fillStyle = 'white';
+            ctx.font = '12px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(
+                passengerCount.toString(),
+                this.getX() + this.getWidth() / 2,
+                this.getY() + this.getHeight() / 2
+            );
+        }
     }
 
     addPassenger(passenger: Passenger) {
