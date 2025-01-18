@@ -24,9 +24,9 @@ export class Game {
     private stations: Station[];
     private trains: Train[];
 
-    private stationConnections: {
-        fromStationId: string;
-        toStationId: string;
+    private lines: {
+        lineName: string;
+        stations: Station[];
     }[];
 
     constructor({
@@ -43,9 +43,9 @@ export class Game {
         // Game objects
         this.passengers = [];
         this.stations = [];
-        this.stationConnections = [];
+        this.lines = [];
         this.trains = [];
-        
+
         this.board.onCanvasClick((x, y) => {
             console.log('Game received canvas click at:', { x, y });
             const point = new Point(x, y);
@@ -80,9 +80,9 @@ export class Game {
         ctx.strokeStyle = '#FFFFFF'; // White lines
         ctx.lineWidth = 2;
 
-        this.stationConnections.forEach(connection => {
-            const fromStation = this.stations.find(s => s.getId() === connection.fromStationId);
-            const toStation = this.stations.find(s => s.getId() === connection.toStationId);
+        this.lines.forEach(line => {
+            const fromStation = line.stations[0];
+            const toStation = line.stations.at(-1);
 
             if (!fromStation || !toStation) return;
 
@@ -96,26 +96,21 @@ export class Game {
             ctx.beginPath();
             ctx.moveTo(x1, y1);
 
-            // Calculate horizontal and vertical distances
+            // Calculate control points for the bezier curve
             const dx = x2 - x1;
             const dy = y2 - y1;
+            const midX = x1 + dx / 2;
+            const midY = y1 + dy / 2;
 
-            if (Math.abs(dx) < 50 || Math.abs(dy) < 50) {
-                // Draw direct line if stations are close
-                ctx.lineTo(x2, y2);
-            } else if (Math.abs(dx) > Math.abs(dy)) {
-                // Draw two lines if horizontal distance is greater
-                const midX = x1 + dx / 2;
-                ctx.lineTo(midX, y1);
-                ctx.lineTo(x2, y2);
-            } else {
-                // Draw three lines for more complex paths
-                const midY = y1 + dy / 2;
-                ctx.lineTo(x1, midY);
-                ctx.lineTo(x2, midY);
-                ctx.lineTo(x2, y2);
-            }
-            
+            // Control points offset perpendicular to the line
+            const offset = Math.min(Math.abs(dx), Math.abs(dy)) * 0.5;
+            const cpx1 = midX - offset;
+            const cpy1 = midY + offset;
+            const cpx2 = midX + offset;
+            const cpy2 = midY - offset;
+
+            // Draw curved path
+            ctx.bezierCurveTo(cpx1, cpy1, cpx2, cpy2, x2, y2);
             ctx.stroke();
         });
     }
@@ -176,19 +171,24 @@ export class Game {
     }
 
     spawnStation(point: Point) {
-        const newStation = new Station(point);
+        const newStation = new Station(`Station ${this.stations.length + 1}`, point);
         
         // If there are existing stations, connect the last one to this new one
         if (this.stations.length > 0) {
             const lastStation = this.stations[this.stations.length - 1];
-            this.stationConnections.push({
-                fromStationId: lastStation.getId(),
-                toStationId: newStation.getId(),
+            this.lines.push({
+                lineName: lastStation.getId(),
+                stations: [lastStation, newStation],
             });
-        }
+        } 
         
         this.stations.push(newStation);
         this.availableStationsToPlace--;
+
+        // If there are 4 stations, spawn a train
+        if (this.stations.length === 4) {
+            this.trains.push(new Train(newStation.getPosition()));
+        }
     }
 
     status() {
@@ -246,12 +246,18 @@ export class Game {
         });
     }
 
+    updateTrains() {
+        
+    }
+
     update() {
         this.tick++;
 
         if (this.canSpawnPassenger()) this.spawnPassenger();
 
         this.updatePassengers();
+
+        this.updateTrains();
     }
 
     start() {

@@ -12,16 +12,18 @@ export class Station extends Object2D {
     private id: string;
     private position: Point;
     private passengers: Passenger[] = [];
+    private name: string;
 
     static size = STATION_SIZE;
     static color = STATION_COLOR;
     static shape = STATION_SHAPE;
 
-    constructor(position: Point) {
+    constructor(name: string, position: Point) {
         super(position.getX(), position.getY(), STATION_SIZE, STATION_SIZE, STATION_COLOR, STATION_SHAPE);
         
         this.id = uuidv4();
         this.position = position;
+        this.name = name;
     }
 
     getId() {
@@ -30,6 +32,10 @@ export class Station extends Object2D {
 
     getPosition() {
         return this.position;
+    }
+
+    getName() {
+        return this.name;
     }
 
     drawHitbox(ctx: CanvasRenderingContext2D) {
