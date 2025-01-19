@@ -1,66 +1,10 @@
 var neighborhoods = new L.geoJson();
-
-$.ajax({
-    dataType: "json",
-    url: "geojson/neighborhoods.geojson",
-    success: function(data) {
-        $(data.features).each(function(key, data) {
-            neighborhoods.addData(data);
-        });
-    }
-}).error(function() {});
-
 var landmarks = new L.geoJson();
-
-$.ajax({
-    dataType: "json",
-    url: "geojson/landmarks.geojson",
-    success: function(data) {
-        $(data.features).each(function(key, data) {
-            landmarks.addData(data);
-        });
-    }
-}).error(function() {});
-
-var tracts = new L.geoJson();
-var tracts_layers;
-var turf_polygons = {};
-
-var tract_centroids = {};
-var tract_nearby = {};
-
 var demand = [];
 var N_demand_station_links = {};
 
 $.getJSON( "json/demand.json", function( data ) {
     demand = data;
-});
-
-var additional_lines_shown = false;
-$('#add-lines').click(function(e) {
-    if (additional_lines_shown) {
-        $("#add-lines").text("Show Additional Lines");
-        $(".subway-hidden").hide();
-        additional_lines_shown = false;
-    } else {
-        $("#add-lines").text("Hide Additional Lines");
-        $(".subway-hidden").show();
-        additional_lines_shown = true;
-    }
-});
-
-var route_diagram_shown = false;
-
-$("#route-header").click(function(e) {
-    if (!route_diagram_shown) {
-        $("#route-diagram").show();
-        $("#route-triangle").html('<i class="fa fa-caret-down" aria-hidden="true"></i>');
-        route_diagram_shown = true;
-    } else {
-        $("#route-diagram").hide();
-        $("#route-triangle").html('<i class="fa fa-caret-right" aria-hidden="true"></i>');
-        route_diagram_shown = false;
-    }
 });
 
 function initialize_game_state() {
