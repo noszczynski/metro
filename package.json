@@ -9,9 +9,15 @@
     "preview": "vite preview"
   },
   "devDependencies": {
-    "typescript": "^5.2.2",
+    "@types/leaflet": "^1.9.16",
     "prettier": "^3.3.1",
-    "vite": "^5.2.0",
-    "uuid": "11.0.5"
+    "typescript": "^5.7.3",
+    "uuid": "11.0.5",
+    "vite": "^5.2.0"
+  },
+  "dependencies": {
+    "@types/esri-leaflet": "^2.1.9",
+    "esri-leaflet": "^2.5.3",
+    "leaflet": "^1.9.4"
   }
 }
