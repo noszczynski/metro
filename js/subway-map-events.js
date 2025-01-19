@@ -62,6 +62,8 @@ function handle_map_click(e) {
 
     var latlng = e.latlng;
 
+    console.log({N_active_line})
+
     if (N_active_line != null) {
 
         var geo = new Geocoder(latlng);
@@ -239,7 +241,6 @@ function transfer_station_event(e) {
 }
 
 function line_select_click_handler(td) {
-
     if ($(td).hasClass('subway-selected')) {
         $(td).removeClass('subway-selected');
         active_line = 'None';
@@ -247,27 +248,8 @@ function line_select_click_handler(td) {
     } else {
         $('.subway-clickable').removeClass('subway-selected');
         $(td).addClass('subway-selected');
-        if ($(td).attr('id') == "subway-airtrain-jfk") {
-            // Special case for AirTrain.
-            N_active_line = find_line_by_name("AirTrain JFK", 1);
 
-        } else if ($(td).attr('id') == "subway-airtrain-lga") {
-            // Special case for AirTrain.
-            N_active_line = find_line_by_name("AirTrain LGA", 1);
-        } else if ($(td).attr('id') == "subway-airtrain-jfk-howard") {
-            // Special case for AirTrain.
-            N_active_line = find_line_by_name("AirTrain JFK-Howard", 1);
-        } else if ($(td).attr('id') == "subway-airtrain-jfk-archer") {
-            // Special case for AirTrain.
-            N_active_line = find_line_by_name("AirTrain JFK-Archer", 1);
-        } else if ($(td).attr('id') == "subway-airtrain-jfk-connectors") {
-            // Special case for AirTrain.
-            N_active_line = find_line_by_name("AirTrain JFK-Connectors", 1);
-        } else if ($(td).attr('id') == "subway-a-euclid") {
-            // Special case for AirTrain.
-            N_active_line = find_line_by_name("A-Euclid", 1);
-
-        } else if ($(td).hasClass("subway-shuttle")) {
+        if ($(td).hasClass("subway-shuttle")) {
             active_line = $(td).attr('id');
             N_active_line = find_line_by_name($(td).attr('id'));
             if ($(td).hasClass("subway-shuttle-add")) {

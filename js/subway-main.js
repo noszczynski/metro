@@ -3,9 +3,9 @@ var landmarks = new L.geoJson();
 var demand = [];
 var N_demand_station_links = {};
 
-$.getJSON( "json/demand.json", function( data ) {
-    demand = data;
-});
+// $.getJSON( "json/demand.json", function( data ) {
+//     demand = data;
+// });
 
 function initialize_game_state() {
 
@@ -131,7 +131,7 @@ function initialize_game_state() {
 var map = L.map('map', {
     fullscreenControl: true,
     attributionControl: false
-}).setView([40.713, -74.006], 13);
+}).setView([50.061267, 19.937566], 14);
 
 
 L.tileLayer.provider('CartoDB.Positron').addTo(map);
