@@ -15,28 +15,6 @@ class Line {
         this.id = line_id_generator.generate();
     }
 
-    to_json() {
-        var json = {
-            "name": this.name,
-            "html": this.html,
-            "css": this.css,
-            "color_bg": this.color_bg,
-            "color_text": this.color_text,
-            "stations": this.stations,
-            "draw_map": this.draw_map,
-            "id": this.id
-        };
-        return json;
-    }
-
-    has_station(station_id) {
-        if (is_in_array(station_id, this.stations)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
     insert_station(station_id) {
 
         var line_insertion_pos = 0;
@@ -202,17 +180,6 @@ class Line {
                 for (var i = 0; i < this.draw_map.length; i++) {
                     coordinates.push({"x": N_stations[this.draw_map[i]].marker.getLatLng().lng, "y": N_stations[this.draw_map[i]].marker.getLatLng().lat});
                 }
-
-                var turf_line = {
-                    "type": "Feature",
-                    "properties": {
-                        "stroke": "#f00"
-                    },
-                    "geometry": {
-                        "type": "LineString",
-                        "coordinates": coordinates
-                    }
-                };
 
                 var spline = new BezierSpline({points: coordinates, sharpness: BEZIER_SHARPNESS});
 
@@ -441,7 +408,6 @@ class LineGroup {
         this.lines = lines;
     }
 }
-
 
 function find_line_by_name(name) {
 

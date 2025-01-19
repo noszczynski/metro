@@ -5,14 +5,6 @@ class Transfer {
         return this;
     }
     
-    to_json() {
-        var json = {
-            "s": this.origin,
-            "e": this.end
-        };
-        return json;
-    }
-    
     draw() {
         var track_options = {color: 'black', weight: TRANSFER_WIDTH, fill: false, smoothFactor: 1.0, offset: 0};
         var track = L.polyline([N_stations[this.origin].marker.getLatLng(), N_stations[this.end].marker.getLatLng()], track_options);

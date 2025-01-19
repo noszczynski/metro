@@ -1,5 +1,3 @@
-
-
 var neighborhoods = new L.geoJson();
 
 $.ajax({
@@ -13,7 +11,6 @@ $.ajax({
 }).error(function() {});
 
 var landmarks = new L.geoJson();
-//landmarks.addTo(map);
 
 $.ajax({
     dataType: "json",
@@ -24,13 +21,6 @@ $.ajax({
         });
     }
 }).error(function() {});
-
-var tracts = new L.geoJson();
-var tracts_layers;
-var turf_polygons = {};
-
-var tract_centroids = {};
-var tract_nearby = {};
 
 var demand = [];
 var N_demand_station_links = {};
@@ -51,9 +41,6 @@ $('#add-lines').click(function(e) {
         additional_lines_shown = true;
     }
 });
-
-var N_number_of_shuttles = 0;
-var N_game_started = false;
 
 function initialize_game_state() {
 
@@ -171,8 +158,6 @@ function initialize_game_state() {
 
 
 }
-
-// Main
 
 initialize_game_state();
 var HEADLESS_MODE = true;

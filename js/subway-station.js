@@ -17,21 +17,6 @@ class Station {
         this.active = true;
     }
 
-    to_json() {
-        var json = {
-            "lat": this.marker.getLatLng().lat,
-            "lng": this.marker.getLatLng().lng,
-            "name": this.name,
-            "info": this.info,
-            "riders": this.riders,
-            "lines": this.lines,
-            //"drawmaps": this.drawmaps,
-            "id": this.id,
-            "active": this.active
-        };
-        return json;
-    }
-
     generate_popup() {
 
         var station_popup = L.popup({'className': 'station-popup'});
