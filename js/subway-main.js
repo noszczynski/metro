@@ -75,9 +75,6 @@ $("#route-header").click(function(e) {
     }
 });
 
-var N_number_of_shuttles = 0;
-var N_game_started = false;
-
 function initialize_game_state() {
 
     if (N_stations != null) {
@@ -206,13 +203,7 @@ var map = L.map('map', {
 
 
 L.tileLayer.provider('CartoDB.Positron').addTo(map);
-/*
-L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
-        attribution: '',
-        maxZoom: 16,
-        minZoom: 12
-}).addTo(map);
-*/
+
 var station_layer = L.featureGroup();
 var curve_layer = L.featureGroup();
 var debug_layer = L.featureGroup();
@@ -253,89 +244,6 @@ $(function() {
     $(document).on('click', '.subway-clickable', function() {
         line_select_click_handler($(this));
         return false;
-    });
-    $('#game-save').click(function() {
-        //generateGameJSON();
-        save_game_json();
-    });
-    $('#game-load').click(function(e) {
-        if (fileElem) {
-            fileElem.click();
-        }
-        e.preventDefault(); // prevent navigation to "#"
-    });
-
-    $('#custom-line-name').keyup(function() {
-        var custom_line_name = $(this).val().substring(0, 20);
-
-        if (custom_line_name.length > 2) {
-            $('#custom-line-marker').removeClass('subway-line');
-            $('#custom-line-marker').addClass('subway-line-long');
-        } else {
-            $('#custom-line-marker').addClass('subway-line');
-            $('#custom-line-marker').removeClass('subway-line-long');
-        }
-
-        $('#custom-line-marker-content').text(custom_line_name);
-
-    });
-    $('#custom-line-css-bg').keyup(function() {
-        var custom_line_css_bg = $(this).val();
-        if (is_css_color(custom_line_css_bg)) {
-            $('#custom-line-marker').css('background-color', custom_line_css_bg);
-            $(this).removeClass('issue');
-        }
-    });
-    $('#custom-line-css-text').keyup(function() {
-        var custom_line_css_text = $(this).val();
-        if (is_css_color(custom_line_css_text)) {
-            $('#custom-line-marker').css('color', custom_line_css_text);
-            $(this).removeClass('issue');
-        }
-    });
-    $("#custom-line-add").click(function() {
-        var custom_line_name = $("#custom-line-name").val().substring(0, 20);
-        var custom_line_css_bg = $("#custom-line-css-bg").val();
-        var custom_line_css_text = $("#custom-line-css-text").val();
-        var issue = false;
-        if (custom_line_name.length == 0) {
-            $('#custom-line-name').addClass('issue');
-            $('#custom-line-error').text('Enter a name.');
-            issue = true;
-        }
-        if (find_line_by_name(custom_line_name) != null) {
-            $('#custom-line-name').addClass('issue');
-            $('#custom-line-error').text('Name already in use.');
-            issue = true;
-        }
-        if (!is_css_color(custom_line_css_bg)) {
-            $('#custom-line-css-bg').addClass('issue');
-            $('#custom-line-error').text('Use a valid hex color code.');
-            issue = true;
-        }
-        if (!is_css_color(custom_line_css_text)) {
-            $('#custom-line-css-text').addClass('issue');
-            $('#custom-line-error').text('Use a valid hex color code.');
-            issue = true;
-        }
-        var custom_line_css_class = 'subway-line';
-        if ($("#custom-line-marker").hasClass('subway-line-long')) {
-            custom_line_css_class = 'subway-line-long';
-        }
-        if (!issue) {
-            add_custom_line(custom_line_name, custom_line_css_class, custom_line_css_bg, custom_line_css_text);
-            add_custom_line_selector(custom_line_name, custom_line_css_class, custom_line_css_bg, custom_line_css_text);
-
-            $('#custom-line-name').removeClass('issue');
-            $('#custom-line-css-bg').removeClass('issue');
-            $('#custom-line-css-text').removeClass('issue');
-            $('#custom-line-error').text('');
-            
-            $("#custom-line-options").hide();
-            N_custom_line_shown = false;
-        } else {
-            $("#option-section-lines").animate({scrollTop: $('#option-section-lines').prop('scrollHeight')}, 1000);
-        }
     });
 
     // UI edits

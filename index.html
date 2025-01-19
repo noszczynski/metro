@@ -22,17 +22,10 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/leaflet.esri.geocoder/2.0.2/esri-leaflet-geocoder.css">
     <script src="https://cdn.jsdelivr.net/leaflet.esri.geocoder/2.0.2/esri-leaflet-geocoder.js"></script>
 
-<!--    <script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/Leaflet.fullscreen.min.js'></script>-->
-<!--    <link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/leaflet.fullscreen.css' rel='stylesheet' />-->
-
     <script src="js/leaflet.curve.js"></script>
     <script src='js/leaflet-pip.js'></script>
     <script src='js/leaflet-providers.js'></script>
-<!--    <script src='js/turf.min.js'></script>-->
     <script src='js/spline.js'></script>
-<!--    <script src='js/bezier.js'></script>-->
-    
-<!--    <script src='js/FileSaver.min.js'></script>-->
 
     <script src='js/subway-settings.js'></script>
     <script src='js/subway-utils.js'></script>
@@ -134,13 +127,11 @@
             <div class="subway-line subway-clickable subway-light-yellow tooltip" id="subway-airtrain-jfk"><div class="height_fix"></div><div class="content">&#9992;</div><span class="tooltiptext info">JFK AirTrain</span></div>
             <div class="subway-line subway-clickable subway-light-yellow subway-hidden tooltip" id="subway-airtrain-lga"><div class="height_fix"></div><div class="content">&#9992;</div><span class="tooltiptext info">LGA AirTrain</span></div>
         </div>
+
         <div class="subway-line-group">
             <div class="subway-line subway-clickable subway-imaginary subway-turquoise"><div class="height_fix"></div><div class="content">T</div></div>
             <div class="subway-line-long subway-clickable subway-imaginary subway-black"><div class="height_fix"></div><div class="content">BQX</div></div>
             <div class="subway-line-long subway-clickable subway-imaginary subway-yellow"><div class="height_fix"></div><div class="content">TriboroRX</div></div>
-        </div>
-
-        <div id="custom-lines" class="subway-line-group">
         </div>
 
         <div class="subway-line-group subway-hidden">
@@ -151,6 +142,7 @@
             <div id="add-lines" class="game-button">Show Additional Lines</div>
             <div id="custom-line" class="game-button">Add Custom Line</div>
         </div>
+
         <div id="custom-line-options">
             <div id="custom-line-options-column-preview">
                 <div id="custom-line-container">
