@@ -11,7 +11,6 @@ $.ajax({
 }).error(function() {});
 
 var landmarks = new L.geoJson();
-//landmarks.addTo(map);
 
 $.ajax({
     dataType: "json",
@@ -50,19 +49,8 @@ $('#add-lines').click(function(e) {
     }
 });
 
-var N_custom_line_shown = false;
-$('#custom-line').click(function(e) {
-    if (N_custom_line_shown) {
-        $('#custom-line-options').hide();
-        N_custom_line_shown = false;
-    } else {
-        $('#custom-line-options').show();
-        N_custom_line_shown = true;
-        $("#option-section-lines").animate({scrollTop: $('#option-section-lines').prop('scrollHeight')}, 1000);
-    }
-})
-
 var route_diagram_shown = false;
+
 $("#route-header").click(function(e) {
     if (!route_diagram_shown) {
         $("#route-diagram").show();

@@ -304,33 +304,6 @@ textarea.station-name-edit {
     cursor: pointer;
 }
 
-#custom-line-container {
-    position: absolute;
-    left: 50%;
-    transform: translate(-50%,200%);
-    width: auto;
-    height: auto;
-}
-
-#custom-line-options {
-    width: 100%;
-    font-size: small;
-    height: auto;
-    position: relative;
-}
-
-#custom-line-options-column-preview {
-    width: 35%;
-    float: left;
-    position: relative;
-    height: auto;
-}
-
-#custom-line-options-column-inputs {
-    width: 65%;
-    float: right;
-}
-
 .custom-line-options-label {
     margin: 5px;
     line-height: 1.6em;
