@@ -436,23 +436,9 @@ class Line {
 }
 
 class LineGroup {
-
     constructor(name, lines) {
         this.name = name;
         this.lines = lines;
-    }
-
-    add_line(line_id) {
-        if (!is_in_array(line_id, this.lines)) {
-            this.lines.push(line_id);
-        }
-    }
-
-    remove_line(line_id) {
-        if (is_in_array(line_id, this.lines)) {
-            var line_id_index = this.lines.indexOf(line_id);
-            this.lines.splice(line_id_index, 1);
-        }
     }
 }
 
