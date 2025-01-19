@@ -35,44 +35,44 @@ var BezierSpline = function(options){
     return this;
   };
 
-  /*
-    Caches an array of equidistant (more or less) points on the curve.
-  */
-  BezierSpline.prototype.cacheSteps = function(mindist){
-    var steps = [];
-    var laststep = this.pos(0);
-    steps.push(0);
-    for(var t=0; t<this.duration; t+=10){
-      var step = this.pos(t);
-      var dist = Math.sqrt((step.x-laststep.x)*(step.x-laststep.x)+(step.y-laststep.y)*(step.y-laststep.y)+(step.z-laststep.z)*(step.z-laststep.z));
-      if(dist>mindist){
-        steps.push(t);
-        laststep = step;
-      }
+/*
+  Caches an array of equidistant (more or less) points on the curve.
+*/
+BezierSpline.prototype.cacheSteps = function(mindist){
+  var steps = [];
+  var laststep = this.pos(0);
+  steps.push(0);
+  for(var t=0; t<this.duration; t+=10){
+    var step = this.pos(t);
+    var dist = Math.sqrt((step.x-laststep.x)*(step.x-laststep.x)+(step.y-laststep.y)*(step.y-laststep.y)+(step.z-laststep.z)*(step.z-laststep.z));
+    if(dist>mindist){
+      steps.push(t);
+      laststep = step;
     }
-    return steps;
+  }
+  return steps;
+};
+
+/*
+  returns angle and speed in the given point in the curve
+*/
+BezierSpline.prototype.vector = function(t){
+  var p1 = this.pos(t+10);
+  var p2 = this.pos(t-10);
+  return {
+    angle:180*Math.atan2(p1.y-p2.y, p1.x-p2.x)/3.14,
+    speed:Math.sqrt((p2.x-p1.x)*(p2.x-p1.x)+(p2.y-p1.y)*(p2.y-p1.y)+(p2.z-p1.z)*(p2.z-p1.z))
   };
+};
 
-  /*
-    returns angle and speed in the given point in the curve
-  */
-  BezierSpline.prototype.vector = function(t){
-    var p1 = this.pos(t+10);
-    var p2 = this.pos(t-10);
-    return {
-      angle:180*Math.atan2(p1.y-p2.y, p1.x-p2.x)/3.14,
-      speed:Math.sqrt((p2.x-p1.x)*(p2.x-p1.x)+(p2.y-p1.y)*(p2.y-p1.y)+(p2.z-p1.z)*(p2.z-p1.z))
-    };
-  };
+/*
+  Gets the position of the point, given time.
 
-  /*
-    Gets the position of the point, given time.
+  WARNING: The speed is not constant. The time it takes between control points is constant.
 
-    WARNING: The speed is not constant. The time it takes between control points is constant.
-
-    For constant speed, use Spline.steps[i];
-  */
-  BezierSpline.prototype.pos = function(time){
+  For constant speed, use Spline.steps[i];
+*/
+BezierSpline.prototype.pos = function(time){
 
     function bezier(t, p1, c1, c2, p2){
       var B = function(t) {
