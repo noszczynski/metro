@@ -2,16 +2,6 @@ function is_in_array(value, array) {
   return array.indexOf(value) > -1;
 }
 
-function is_in_2d_array(arr, i, j) {
-    for (var a = 0; a < arr.length; a++) {
-        var p = arr[a];
-        if (p.indexOf(i) > -1 && p.indexOf(j) > -1) {
-            return true;
-        }
-    }
-    return false;
-}
-
 function intersect(a, b) {
     var t;
     if (b.length > a.length) t = b, b = a, a = t; // indexOf to loop over shorter
@@ -33,63 +23,6 @@ function sort_by_group(line_ids) {
             return group_x > group_y;
         }
     });
-}
-
-function debug_stations(station_id_list) {
-    for (var i = 0; i < station_id_list.length; i++) {
-        console.log(N_stations[station_id_list[i]]);
-    }
-}
-
-function debug_lines(line_id_list) {
-    for (var i = 0; i < line_id_list.length; i++) {
-        console.log(N_lines[line_id_list[i]]);
-    }
-}
-
-function find_stations_by_name(station_name) {
-    var stations = [];
-    for (var i = 0; i < N_stations.length; i++) {
-        if (N_stations[i].name == station_name && N_stations[i].active) {
-            stations.push(N_stations[i]);
-        }
-    }
-    return stations;
-}
-
-function debug_voxels() {
-
-    for (var lat = LAT_MIN; lat < LAT_MAX; lat += VOXELS_RES_LAT) {
-        for (var lng = LNG_MIN; lng < LNG_MAX; lng += VOXELS_RES_LNG) {
-            var voxel_i = Math.round((lat - LAT_MIN)/VOXELS_RES_LAT);
-            var voxel_j = Math.round((lng - LNG_MIN)/VOXELS_RES_LNG);
-
-            console.log("Adding voxel at "+voxel_i.toString()+","+voxel_j.toString());
-            var voxel = L.rectangle([[lat, lng], [lat+VOXELS_RES_LAT, lng+VOXELS_RES_LNG]], {color: "#ff7800", weight: 0, fillOpacity: demand[voxel_i][voxel_j]/1000.0});
-            voxel.addTo(map);
-
-        }
-    }
-}
-
-function show_demand_layer() {
-    var image_url = "tools/demand.png";
-    var image_bounds = [[LAT_MIN, LNG_MAX], [LAT_MAX, LNG_MIN]];
-    L.imageOverlay(image_url, image_bounds).addTo(map);
-}
-
-function debug_control_points(c) {
-    for (var i = 0; i < c.length; i++) {
-        console.log("Set: ("+c[i][0][0]+","+c[i][0][1]+"), ("+c[i][1][0]+","+c[i][1][1]+")");
-    }
-}
-
-function redraw_all_lines() {
-    for (var i = 0; i < N_lines.length; i++) {
-        N_lines[i].draw();
-    }
-
-    station_layer.bringToFront();
 }
 
 function average_control_points(cpta) {
@@ -136,52 +69,6 @@ function regenerate_popups() {
             station.generate_popup();
     }
 
-}
-
-function clear_debug_layer() {
-
-    map.removeLayer(debug_layer);
-    debug_layer = L.featureGroup();
-    map.addLayer(debug_layer);
-}
-
-function recalculate_all_ridership(instruction) {
-    for (var i = 0; i < N_stations.length; i++) {
-        calculate_ridership(i, instruction);
-    }
-
-}
-
-function futz_boroughs() {
-    for (var i = 0; i < N_stations.length; i++) {
-        var station_info = N_stations[i].info.split("<br />");
-        N_stations[i].borough = station_info[0];
-        N_stations[i].neighborhood = station_info[1];
-    }
-}
-
-function is_css_color(s) {
-    return String(s).match(/^#[0-9A-Fa-f]{6}$/);
-}
-
-function add_custom_line(custom_line_name, custom_line_css_class, custom_line_css_bg, custom_line_css_text) {
-    var line = new Line(custom_line_name, custom_line_name, custom_line_css_class, custom_line_css_bg, custom_line_css_text);
-    N_lines.push(line);
-    var line_group_exists = false;
-    for (var i = 0; i < N_line_groups.length; i++) {
-        if (N_line_groups[i].name == custom_line_css_bg) {
-            N_line_groups[i].add_line(line.id);
-            line_group_exists = true;
-        }
-    }
-    if (!line_group_exists) {
-        N_line_groups.push(new LineGroup(custom_line_css_bg, [line.id]));
-    }
-}
-
-function add_custom_line_selector(custom_line_name, custom_line_css_class, custom_line_css_bg, custom_line_css_text) {
-    $("#custom-lines").append('<div class="'+custom_line_css_class+' subway-clickable subway-imaginary" style="background-color: '+custom_line_css_bg+'; color: '+custom_line_css_text+'"><div class="height_fix"></div><div class="content">'+custom_line_name+'</div></div>');
-    $("#custom-lines").show();
 }
 
 function newShuttleTemplate(num) {
