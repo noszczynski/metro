@@ -1,5 +1,3 @@
-
-
 var neighborhoods = new L.geoJson();
 
 $.ajax({

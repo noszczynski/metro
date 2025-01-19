@@ -47,48 +47,34 @@
     <script src='js/subway-data.js'></script>
     
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD_upU9Ivq9tc2tk450HpgPr6zC3NHSjjs&libraries=places"></script>
-    <script type="text/javascript">
-        
-    </script>
-    
-    <input type="file" id="fileElem" style="display:none" onchange="handle_files(this.files)">
 
+    <div id="map"></div>
 
-    <div id="map">
-    </div>
     <div id="starter">
-
-        <div id="game-header">Brand New Subway</div>
-        <div id="game-video">
-            <!--<video autoplay="autoplay" loop="loop">
-                <source src="img/guide.mp4" type="video/mp4">
-                Your browser does not support the video tag.
-            </video>-->
-            <iframe src="https://player.vimeo.com/video/178420828?autoplay=1&loop=1&title=0&byline=0&portrait=0" width="640" height="360" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
-        </div>
+        <div id="game-header">Metro</div>
         <div id="game-start">
-
             <div class="game-start-section">
                 <div class="game-start-interior">
                     <div class="game-start-choice-large" id="game-start-scratch">Start from scratch</div>
-                    <div id="game-start-city-picker"><input id="pac-input" class="controls" type="text" placeholder="Or type in a different city..."></div>
+                    <div id="game-start-city-picker">
+                        <input id="pac-input" class="controls" type="text" placeholder="Or type in a different city...">
+                    </div>
                 </div>
             </div>
-            <div class="game-start-section">
-                <div class="game-start-interior">
-                    <div class="game-start-descriptor">Start from:</div>
-                    <div class="game-start-button game-start-choice-small" id="game-start-2016">2016 Present-Day Map</div>
-                    <div class="game-start-button game-start-choice-small" id="game-start-2025">2025 Planned Subway Map</div>
-                    <div class="game-start-button game-start-choice-small" id="game-start-1972">1972 Vignelli Map</div>
-                    <div class="game-start-button game-start-choice-small game-start-greyed" id="game-start-1963">1963 Nester's Map</div>
-                </div>
-            </div>
-
+<!--            <div class="game-start-section">-->
+<!--                <div class="game-start-interior">-->
+<!--                    <div class="game-start-descriptor">Start from:</div>-->
+<!--                    <div class="game-start-button game-start-choice-small" id="game-start-2016">2016 Present-Day Map</div>-->
+<!--                    <div class="game-start-button game-start-choice-small" id="game-start-2025">2025 Planned Subway Map</div>-->
+<!--                    <div class="game-start-button game-start-choice-small" id="game-start-1972">1972 Vignelli Map</div>-->
+<!--                    <div class="game-start-button game-start-choice-small game-start-greyed" id="game-start-1963">1963 Nester's Map</div>-->
+<!--                </div>-->
+<!--            </div>-->
         </div>
-
     </div>
+
     <div id="options">
-    <div id="option-section-lines">
+        <div id="option-section-lines">
         <div class="subway-line-group">
             <div class="subway-line subway-clickable subway-blue subway-selected"><div class="height_fix"></div><div class="content">A</div></div>
             <div class="subway-line subway-clickable subway-blue"><div class="height_fix"></div><div class="content">C</div></div>
@@ -185,38 +171,35 @@
         </div>
     </div>
 
-    <div id="option-section-route">
-        <div id="route-header"><span id="route-triangle"><i class="fa fa-caret-right" aria-hidden="true"></i></span> Route Diagram</div>
-        <div id="route-diagram-container"><div id="route-diagram"></div></div>
+<!--        <div id="option-section-route">-->
+<!--            <div id="route-header"><span id="route-triangle"><i class="fa fa-caret-right" aria-hidden="true"></i></span> Route Diagram</div>-->
+<!--            <div id="route-diagram-container"><div id="route-diagram"></div></div>-->
+<!--        </div>-->
+
+<!--        <div id="option-section-status">-->
+<!--        <div id="game-outcome">-->
+<!--            <div id="metrocard">-->
+<!--                <span class="game-icon"><i class="fa fa-credit-card" aria-hidden="true"></i></span>-->
+<!--                <span id="metrocard-cost"></span>-->
+<!--                <div class="game-icon-description">Single-ride MetroCard fare</div>-->
+<!--            </div>-->
+<!--            <div id="ridership">-->
+<!--                <span class="game-icon"><i class="fa fa-user" aria-hidden="true"></i></span>-->
+<!--                <span id="system-ridership"></span>-->
+<!--                <div class="game-icon-description">Average weekday ridership</div>-->
+<!--            </div>-->
+<!--            <div id="rating">-->
+<!--                <span class="game-icon"><i class="fa fa-arrow-right" aria-hidden="true"></i></span>-->
+<!--                <span id="system-rating"></span>-->
+<!--                <div class="game-icon-description">Overall system rating</div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        <div id="game-load" class="game-button">Load</div>-->
+<!--        <div id="game-save" class="game-button">Save</div>-->
+<!--        <a id="game-about" class="game-button" href="https://jpw.nyc/transit">About this game</a>-->
+<!--        <div class="attribution"><a href="http://leafletjs.com/">Leaflet</a> | Tiles &copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap</a> &mdash; <a href="https://carto.com/attributions">CARTO</a></div>-->
+<!--    </div>-->
     </div>
-
-    <div id="option-section-status">
-        <div id="game-outcome">
-            <div id="metrocard">
-                <span class="game-icon"><i class="fa fa-credit-card" aria-hidden="true"></i></span>
-                <span id="metrocard-cost"></span>
-                <div class="game-icon-description">Single-ride MetroCard fare</div>
-            </div>
-            <div id="ridership">
-                <span class="game-icon"><i class="fa fa-user" aria-hidden="true"></i></span>
-                <span id="system-ridership"></span>
-                <div class="game-icon-description">Average weekday ridership</div>
-            </div>
-            <div id="rating">
-                <span class="game-icon"><i class="fa fa-arrow-right" aria-hidden="true"></i></span>
-                <span id="system-rating"></span>
-                <div class="game-icon-description">Overall system rating</div>
-            </div>
-        </div>
-        <div id="game-load" class="game-button">Load</div>
-        <div id="game-save" class="game-button">Save</div>
-        <a id="game-about" class="game-button" href="https://jpw.nyc/transit">About this game</a>
-        <div class="attribution"><a href="http://leafletjs.com/">Leaflet</a> | Tiles &copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap</a> &mdash; <a href="https://carto.com/attributions">CARTO</a></div>
-    </div>
-
-    </div>
-
-
     <script src='js/subway-main.js'></script>
 </body>
 </html>
