@@ -246,16 +246,6 @@ $(function() {
     });
 
     $(".game-start-button").not(".game-start-greyed").click(function() {
-        handle_server_file("game-starters/" + $(this).attr("id") + ".json");
-        /*
-        $(".subway-shuttle-add").remove();
-        $(".subway-shuttle").parent().append(newShuttleTemplate(number_of_shuttles+1));
-        $(".subway-shuttle").parent().append(newShuttleTemplate(number_of_shuttles+2));
-        $(".subway-shuttle").removeClass("subway-shuttle-add");
-        $(".subway-shuttle").children(".content").text("S");
-        $(".subway-shuttle").parent().append(newShuttleTemplate(number_of_shuttles+3));
-
-        number_of_shuttles = 3;*/
         $("#starter").hide();
     });
     
