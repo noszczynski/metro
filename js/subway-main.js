@@ -141,6 +141,7 @@ map.addLayer(debug_layer);
 
 initialize_game_state();
 
+var HEADLESS_MODE = false;
 var CUSTOM_CITY_NAME = "";
 
 $(function() {
