@@ -6,6 +6,45 @@ function create_station_marker(id, latlng_orig) {
         // Disable new station creation.
         map.off('click', handle_map_click);
 
+        if (N_transfer_state == 1) {
+
+            N_transfer_end = id;
+            N_transfer_state = 0;
+
+            var different_stations = N_transfer_origin != N_transfer_end;
+            var stations_exist = (N_stations[N_transfer_origin].active && N_stations[N_transfer_end]);
+            var origin_latlng = N_stations[N_transfer_origin].marker.getLatLng();
+            var end_latlng = N_stations[N_transfer_end].marker.getLatLng();
+            var point1 = {
+            "type": "Feature",
+                "properties": {},
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [origin_latlng.lat, origin_latlng.lng]
+                }
+            };
+            var point2 = {
+                "type": "Feature",
+                "properties": {},
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [end_latlng.lat, end_latlng.lng]
+                }
+            };
+            var points = {
+                "type": "FeatureCollection",
+                "features": [point1, point2]
+            };
+            var distance = turf.distance(point1, point2, "miles");
+            if (different_stations && stations_exist && distance < 0.5) {
+                var transfer = new Transfer(N_transfer_origin, N_transfer_end);
+                transfer.draw();
+                N_transfers.push(transfer);
+            }
+            generate_route_diagram(N_active_line);
+
+        }
+
         // Wait a second before you can create a new station.
         setTimeout(function() {
             map.on('click', handle_map_click);
@@ -179,6 +218,16 @@ function build_to_station_event(e) {
 
     regenerate_popups();
     generate_route_diagram(N_active_line);
+}
+
+function transfer_station_event(e) {
+    var station_id = $(this).attr('id').replace('transfer-', '');
+    var station = N_stations[station_id];
+
+    if (N_transfer_state == 0) {
+        N_transfer_origin = station_id;
+        N_transfer_state = 1;
+    }
 }
 
 function line_select_click_handler(td) {

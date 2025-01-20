@@ -52,6 +52,8 @@ export class Station {
         station_content += ' </div>';
 
 
+        station_content += '<div class="station-buttons"><div class="station-content-button station-transfer" id="transfer-'+this.id.toString()+'">Transfer</div>';
+
         if (!is_in_array(N_active_line.id, this.lines)) {
             station_content += '<div class="station-content-button station-build line-'+N_active_line.id.toString()+'" id="build-'+this.id.toString()+'">Build <div class="subway-line-mini '+N_active_line.css+'" style="background-color: '+N_active_line.color_bg+'; color: '+N_active_line.color_text+';"><div class="height_fix"></div><div class="content">'+N_active_line.html+'</div></div></div>';
         }
