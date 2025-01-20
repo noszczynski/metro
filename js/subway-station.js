@@ -77,9 +77,7 @@ class Station {
     del() {
 
         // Remove the marker.
-        if (!HEADLESS_MODE) {
-            station_layer.removeLayer(this.marker);
-        }
+        station_layer.removeLayer(this.marker);
 
         // Set the station to "inactive".
         this.active = false;
@@ -116,9 +114,6 @@ class Station {
             }
         }
 
-        // Trigger ridership recalculation for nearby stations
-        calculate_ridership(this.id, RIDERSHIP_DELETE);
-
     }
 
     set_marker_style() {
@@ -150,8 +145,6 @@ function geocode_to_station(geo, line, borough, neighborhood) {
     N_station.borough = borough;
     N_station.neighborhood = neighborhood;
 
-    calculate_ridership(N_station.id, RIDERSHIP_ADD);
-
     N_station.marker.openPopup();
 
     var impacted_lines = [N_active_line.id];
@@ -177,9 +170,6 @@ function geocode_to_station(geo, line, borough, neighborhood) {
 
     station_layer.bringToFront();
     generate_route_diagram(line);
-
-    calculate_total_ridership();
-
 }
 
 var N_stations = [];
