@@ -69,6 +69,8 @@ function delete_station_event(e) {
     station_layer.bringToFront();
     regenerate_popups();
     generate_route_diagram(N_active_line);
+    calculate_total_ridership();
+
 }
 
 function remove_line_from_station_event(e) {
@@ -114,6 +116,9 @@ function remove_line_from_station_event(e) {
 
     regenerate_popups();
     generate_route_diagram(N_active_line);
+
+    calculate_ridership(station_id_to_remove, RIDERSHIP_NOCHANGE);
+    calculate_total_ridership();
 
     $(this).remove();
 
@@ -168,6 +173,9 @@ function build_to_station_event(e) {
     }
 
     station_layer.bringToFront();
+
+    calculate_ridership(station_id, RIDERSHIP_NOCHANGE);
+    calculate_total_ridership();
 
     regenerate_popups();
     generate_route_diagram(N_active_line);
