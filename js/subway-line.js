@@ -334,10 +334,7 @@ class Line {
 
                     var track = L.curve(bezier_options, curve_options);
 
-                    //var track = L.polyline(latlngs, curve_options);
-                    if (!HEADLESS_MODE) {
-                        curve_layer.addLayer(track);
-                    }
+                    curve_layer.addLayer(track);
                     this.tracks.push(track);
 
                     // Adjust marker styles.
@@ -347,13 +344,10 @@ class Line {
 
                 // Adjust marker style for the station outside the loop.
                 N_stations[this.draw_map[this.draw_map.length-1]].set_marker_style();
-
             }
 
         } else {
-
             for (i = 1; i < this.draw_map.length; i++) {
-
                 var station_prev = N_stations[this.draw_map[i-1]];
                 var station_next = N_stations[this.draw_map[i]];
 

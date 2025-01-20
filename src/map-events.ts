@@ -187,12 +187,6 @@ export function build_to_station_event(e) {
     generate_route_diagram(N_active_line);
 }
 
-export function transfer_station_event(e) {
-
-    var station_id = $(this).attr('id').replace('transfer-', '');
-    var station = N_stations[station_id];
-}
-
 export function line_select_click_handler(td) {
 
     if ($(td).hasClass('subway-selected')) {

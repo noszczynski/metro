@@ -1,11 +1,6 @@
 var neighborhoods = new L.geoJson();
 var landmarks = new L.geoJson();
-var demand = [];
 var N_demand_station_links = {};
-
-// $.getJSON( "json/demand.json", function( data ) {
-//     demand = data;
-// });
 
 function initialize_game_state() {
 
@@ -146,15 +141,13 @@ map.addLayer(debug_layer);
 
 initialize_game_state();
 
-var HEADLESS_MODE = false;
 var CUSTOM_CITY_NAME = "";
 
 $(function() {
-
     // Event handlers
     map.on('click', handle_map_click);
+
     $(document).on('click', '.station-delete', delete_station_event);
-    $(document).on('click', '.station-transfer', transfer_station_event);
     $(document).on('click', '.station-build', build_to_station_event);
     $(document).on('click', '.subway-deletable', remove_line_from_station_event);
     $(document).on('click', '.station-name', function() {
@@ -173,6 +166,7 @@ $(function() {
             generate_route_diagram(N_active_line);
         });
     });
+
     $(document).on('click', '.subway-clickable', function() {
         line_select_click_handler($(this));
         return false;

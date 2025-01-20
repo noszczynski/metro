@@ -12,26 +12,18 @@ function create_station_marker(id, latlng_orig) {
         }, 1000);
     });
 
-    if (!HEADLESS_MODE) {
-        station_layer.addLayer(station);
-    }
-    
+    station_layer.addLayer(station);
+
     return station;
 }
 
 function handle_map_click(e) {
-
     var latlng = e.latlng;
 
-    console.log({N_active_line})
-
     if (N_active_line != null) {
-
         var geo = new Geocoder(latlng);
         geo.geocode(N_active_line); // Pass the active line in case it changes. Contains a call back to create the station
-
     }
-
 }
 
 function delete_station_event(e) {
@@ -179,12 +171,6 @@ function build_to_station_event(e) {
 
     regenerate_popups();
     generate_route_diagram(N_active_line);
-}
-
-function transfer_station_event(e) {
-
-    var station_id = $(this).attr('id').replace('transfer-', '');
-    var station = N_stations[station_id];
 }
 
 function line_select_click_handler(td) {

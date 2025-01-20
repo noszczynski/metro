@@ -5,48 +5,44 @@ class Station {
         this.borough = "None";
         this.neighborhood = "None";
         this.riders = 0.0;
-
         this.lines = []; // Lines that contain this station.
-        //this.drawmaps = []; // Lines that contain this station within its draw map.
         this.transfers = [];
-
         this.id = station_id_generator.generate();
-
         this.marker = create_station_marker(this.id, [lat, lng]);
-
         this.active = true;
     }
 
     generate_popup() {
-
         var station_popup = L.popup({'className': 'station-popup'});
-
         var station_content = '<div class="station-name" id="station-'+this.id.toString()+'">'+this.name+'   <i class="fa fa-pencil" style="margin-left: 5px;" aria-hidden="true"></i></div>';
+        var html_css_combos = [];
+
         station_content += '<div class="station-content"><div class="station-info">'+this.info+'<br /><i class="fa fa-user" aria-hidden="true"></i> '+Math.round(this.riders).toString()+'</div>';
         station_content += '<div class="station-info subway-lines">';
-
-        var html_css_combos = [];
 
         for (var i = 0; i < this.lines.length; i++) {
             var line = this.lines[i];
             var html_css_combo = N_lines[line].html + ' ' + N_lines[line].css;
+
             if (!is_in_array(html_css_combo, html_css_combos)) {
                 station_content += '<div id="'+this.id.toString()+":"+line.toString()+'" class="tooltip subway-deletable '+N_lines[line].css+'" style="background-color: '+N_lines[line].color_bg+'; color: '+N_lines[line].color_text+';"><div class="height_fix"></div><div class="content">'+N_lines[line].html+'</div><span class="tooltiptext">Click to delete</span></div>';
                 html_css_combos.push(html_css_combo);
             }
         }
-        station_content += ' </div>';
 
+        station_content += ' </div>';
 
         if (!is_in_array(N_active_line.id, this.lines)) {
             station_content += '<div class="station-content-button station-build line-'+N_active_line.id.toString()+'" id="build-'+this.id.toString()+'">Build <div class="subway-line-mini '+N_active_line.css+'" style="background-color: '+N_active_line.color_bg+'; color: '+N_active_line.color_text+';"><div class="height_fix"></div><div class="content">'+N_active_line.html+'</div></div></div>';
         }
 
         station_content += '<div class="station-content-button station-delete ';
+
         for (i = 0; i < this.lines.length; i++) {
             var line = this.lines[i];
             station_content += 'line-'+N_lines[line].id.toString()+' ';
         }
+
         station_content += '" id="delete-'+this.id.toString()+'">Delete</div>';
         station_content += '</div><div style="clear: both;"></div>';
 
@@ -55,7 +51,6 @@ class Station {
         }
 
         station_content += '</div>';
-
         station_popup.setContent(station_content);
 
         this.marker.unbindPopup();
@@ -66,16 +61,17 @@ class Station {
 
     drawmaps() {
         var drawmaps = [];
+
         for (var i = 0; i < N_lines.length; i++) {
             if (is_in_array(this.id, N_lines[i].draw_map)) {
                 drawmaps.push(N_lines[i].id);
             }
         }
+
         return drawmaps;
     }
 
     del() {
-
         // Remove the marker.
         station_layer.removeLayer(this.marker);
 
@@ -85,12 +81,12 @@ class Station {
         var impacted_lines = [];
 
         for (var i = 0; i < N_lines.length; i++) {
-
             // Remove from station array.
             if (is_in_array(this.id, N_lines[i].stations)) {
                 if (!is_in_array(i, impacted_lines)) {
                     impacted_lines.push(i);
                 }
+
                 var station_id_index = N_lines[i].stations.indexOf(this.id);
                 N_lines[i].stations.splice(station_id_index, 1);
             }
@@ -103,7 +99,6 @@ class Station {
                 var station_id_index = N_lines[i].draw_map.indexOf(this.id);
                 N_lines[i].draw_map.splice(station_id_index, 1);
             }
-
         }
 
         // Remove transfers
@@ -113,7 +108,6 @@ class Station {
                 transfer.undraw();
             }
         }
-
     }
 
     set_marker_style() {
